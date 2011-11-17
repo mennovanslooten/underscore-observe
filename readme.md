@@ -167,7 +167,17 @@ a.sort(); // alerts in order:
           // '0 was created at 0'
           // '1 was created at 1'
           // '2 was created at 2'
+
 // a is now [0, 1, 2]
+// Array.splice() triggers *delete* observers once for each removed element in
+// their old positions and *create* observers once for each inserted element in
+// their new positions.
+a.splice(0, 3, 'Hello', 'world'); // alerts in order:
+                                 // '0 was removed at 0'
+                                 // '1 was removed at 1'
+                                 // '2 was removed at 2'
+                                 // 'Hello was created at 0'
+                                 // 'world was created at 1'
 ```
 
 
