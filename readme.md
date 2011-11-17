@@ -32,7 +32,7 @@ This is a JavaScript utility that allows you to add observer functions to any Ar
 // For example, take any array:
 var a = ['zero', 'one', 'two', 'trhee'];
 
-// Add an observer function to that array:
+// Add a generic observer function to that array:
 _.observe(a, function() {
     alert('something happened');
 });
@@ -67,6 +67,11 @@ _.observe(a, 'delete', function(old_item, item_index) {
     alert(old_item + ' was removed at ' + item_index);
 });
 a.pop(); // alerts 'too was removed at 2'
+
+
+// PLEASE NOTE: generic and create observers are also triggered once for each
+// element of the array when the observer is first bound. For the sake of
+// brevity, I'll leave those alerts out of the examples.
 ```
 
 Each of these events can be triggered in many different ways. There's more information below on what triggers which event.
@@ -154,12 +159,12 @@ a.reverse(); // alerts in order:
 
 
 // Array.shift() triggers *delete* observers once for the shifted element:
-a.shift(); // alerts '2 was removed at 2'
+a.shift(); // alerts '2 was removed at 0'
 // a is now [1, 0]
 
 
 // Array.unshift() triggers *create* observers once for the unshifted element.
-a.unshift(2); // alerts '2 was created at 2'
+a.unshift(2); // alerts '2 was created at 0'
 // a is now [2, 1, 0]
 
 
