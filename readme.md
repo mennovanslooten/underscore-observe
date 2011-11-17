@@ -129,13 +129,16 @@ _.observe(a, 'delete', function(old_item, item_index) {
 
 // ...now let's look at each of the mutator methods.
 
+
 // Array.pop() triggers *delete* observers once for the popped element:
 a.pop(); // alerts '2 was removed at 2'
 // a is now [0, 1]
 
+
 // Array.push() triggers *create* observers once for the pushed element.
 a.push(2); // alerts '2 was created at 2'
 // a is now [0, 1, 2]
+
 
 // Array.reverse() triggers *delete* observers once for each element in
 // their old positions and *create* observers once for each element in
@@ -149,13 +152,16 @@ a.reverse(); // alerts in order:
              // '0 was created at 2'
 // a is now [2, 1, 0]
 
+
 // Array.shift() triggers *delete* observers once for the shifted element:
 a.shift(); // alerts '2 was removed at 2'
 // a is now [1, 0]
 
+
 // Array.unshift() triggers *create* observers once for the unshifted element.
 a.unshift(2); // alerts '2 was created at 2'
 // a is now [2, 1, 0]
+
 
 // Array.sort() triggers *delete* observers once for each element in
 // their old positions and *create* observers once for each element in
@@ -167,8 +173,9 @@ a.sort(); // alerts in order:
           // '0 was created at 0'
           // '1 was created at 1'
           // '2 was created at 2'
-
 // a is now [0, 1, 2]
+
+
 // Array.splice() triggers *delete* observers once for each removed element in
 // their old positions and *create* observers once for each inserted element in
 // their new positions.
@@ -178,6 +185,7 @@ a.splice(0, 3, 'Hello', 'world'); // alerts in order:
                                  // '2 was removed at 2'
                                  // 'Hello was created at 0'
                                  // 'world was created at 1'
+// a is now ['Hello', 'world']
 ```
 
 
