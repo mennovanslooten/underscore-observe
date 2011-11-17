@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <head>
+        <title>Todo</title>
+        <link href="css/todo.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <div id="todo-app">
+            <h1>Todos</h1>
+
+            <p>
+                <input type="text" placeholder="What needs to be done?" id="new-todo" autofocus>
+            </p>
+            
+            <ol id="todo-list"></ol>
+
+            <p>
+                <strong class="remaining"></strong> left.
+            </p>
+
+            <p>
+                <button class="clear">Clear <span></span> completed items</button>
+            </p>
+        </div>
+
+        <script type="text/template" id="todo-item-template">
+            <li>
+                <input type="checkbox">
+                <span></span>
+                <button>✕</button>
+            </li>
+        </script>
+        <script type="text/javascript" src="js/jquery-1.7.js"></script>
+        <script type="text/javascript" src="js/json2.js"></script>
+        <script type="text/javascript" src="js/underscore.js"></script>
+        <script type="text/javascript" src="js/underscore.observable.js"></script>
+        <script type="text/javascript" src="js/todo.js"></script>
+
+    </body>
+</html>
+
+
