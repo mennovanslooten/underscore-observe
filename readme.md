@@ -54,7 +54,7 @@ If you have elements in your UI that are in some way dependent on the contents o
 
 ## Do you have any examples?
 
-Of course, check out [this simple todo-list](asdad) and then check out [the source]().
+Of course, check out [this simple todo-list](http://experiments.mennovanslooten.nl/2011/observable-arrays/todo.html) and then check out [the source](https://github.com/mennovanslooten/Observable-Arrays/blob/master/js/todo.js).
 
 ## That looks rather familiar.
 
