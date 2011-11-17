@@ -8,15 +8,19 @@ This is an extension to [Underscore](http://documentcloud.github.com/underscore/
 
 Let's say you have an array:
 
-    var a = ['zero', 'one', 'two', 'trhee'];
+```javascript
+var a = ['zero', 'one', 'two', 'trhee'];
+```
 
 You can then add an observer function to that array:
 
-    _.observe(a, function() {
-        alert('something happened');
-    });
+```javascript
+_.observe(a, function() {
+    alert('something happened');
+});
 
-    a[3] = 'three'; // alerts 'something happened'
+a[3] = 'three'; // alerts 'something happened'
+```
 
 ## Can you be more specific than "something happened"?
 
@@ -24,27 +28,33 @@ Sure, you can also bind to 3 specific types of array events: *create*, *update*,
 
 **create** is triggered when an element is added to the array.
 
-    var a = ['zero', 'one'];
-    _.observe(a, 'create', function(new_item, item_index) {
-        alert(new_item + ' was created at ' + item_index);
-    });
-    a.push('two'); // alerts 'two was created at 2'
+```javascript
+var a = ['zero', 'one'];
+_.observe(a, 'create', function(new_item, item_index) {
+    alert(new_item + ' was created at ' + item_index);
+});
+a.push('two'); // alerts 'two was created at 2'
+```
 
 **update** is triggered when an element in the array is changed.
 
-    var a = ['zero', 'one', 'too', 'three'];
-    _.observe(a, 'update', function(new_item, old_item, item_index) {
-        alert(new_item + ' was changed from ' + old_item + ' at ' + item_index);
-    });
-    a[2] = 'two' // alerts 'two was changed from too at 2'
+```javascript
+var a = ['zero', 'one', 'too', 'three'];
+_.observe(a, 'update', function(new_item, old_item, item_index) {
+    alert(new_item + ' was changed from ' + old_item + ' at ' + item_index);
+});
+a[2] = 'two' // alerts 'two was changed from too at 2'
+```
 
 **delete** is triggered when an element is removed from the array.
 
-    var a = ['zero', 'one', 'two', 'three'];
-    _.observe(a, 'delete', function(old_item, item_index) {
-        alert(old_item + ' was removed from ' + item_index);
-    });
-    a.pop(); // alerts 'three was removed from 3'
+```javascript
+var a = ['zero', 'one', 'two', 'three'];
+_.observe(a, 'delete', function(old_item, item_index) {
+    alert(old_item + ' was removed from ' + item_index);
+});
+a.pop(); // alerts 'three was removed from 3'
+```
 
 Each of these events can be triggered in many different ways. There's more information below on what triggers which event.
 
@@ -69,17 +79,18 @@ I thought it was a really neat example of a bunch of different UI elements that 
 The catch is that it only works if you **modify the original array**. It won't
 work if you overwrite it completely.
 
-    var a = ['zero', 'one', 'two'];
-    _.observe(a, function() {
-        alert('something happened');
-    });
+```javascript
+var a = ['zero', 'one', 'two'];
+_.observe(a, function() {
+    alert('something happened');
+});
 
-    a = [0, 1, 2]; // nothing happens
+a = [0, 1, 2]; // nothing happens
+```
 
 The good news is you can use any method to modify an array:
 
-* You can use all  of
-the standard [Array Mutator methods](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array#Mutator_methods). See below for specifics.
+* You can use all  of the standard [Array Mutator methods](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array#Mutator_methods). See below for specifics.
 * You can modify the `length` property. This can trigger either *delete* or *create* observers, depending on if the new length is less or more than the old.
 * You can modify an element in place by referencing to it directly. (i.e. `some_array[12] = 'foobar'`)
 
@@ -88,77 +99,93 @@ the standard [Array Mutator methods](https://developer.mozilla.org/en/JavaScript
 
 All of this section's code examples assume this array and these observers are defined:
 
-    var a = [0, 1, 2];
+```javascript
+var a = [0, 1, 2];
 
-    _.observe(a, 'create', function(new_item, item_index) {
-        alert(new_item + ' was created at ' + item_index);
-    })
+_.observe(a, 'create', function(new_item, item_index) {
+    alert(new_item + ' was created at ' + item_index);
+})
 
-    _.observe(a, 'update', function(new_item, old_item, item_index) {
-        alert(new_item + ' was changed from ' + old_item + ' at ' + item_index);
-    });
+_.observe(a, 'update', function(new_item, old_item, item_index) {
+    alert(new_item + ' was changed from ' + old_item + ' at ' + item_index);
+});
 
-    _.observe(a, 'delete', function(old_item, item_index) {
-        alert(old_item + ' was removed from ' + item_index);
-    });
+_.observe(a, 'delete', function(old_item, item_index) {
+    alert(old_item + ' was removed from ' + item_index);
+});
+```
 
 ### pop
 
-    // Array.pop() triggers *delete* observers once for the popped element:
-    a.pop; // alerts '2 was removed from 2'
+```javascript
+// Array.pop() triggers *delete* observers once for the popped element:
+a.pop; // alerts '2 was removed from 2'
+```
     
 ### push
 
-    // Array.push() triggers *create* observers once for the pushed element.
-    a.push(3); // alerts '3 was created at 3'
+```javascript
+// Array.push() triggers *create* observers once for the pushed element.
+a.push(3); // alerts '3 was created at 3'
+```
 
 ### reverse
 
-    // Array.reverse() triggers *delete* observers once for each element in
-    // their old positions and *create* observers once for each element in
-    // their new positions.
-    a.reverse(); // alerts in order:
-        '2 was deleted from 2'
-        '1 was deleted from 1'
-        '0 was deleted from 0'
-        '2 was created at 0'
-        '1 was created at 1'
-        '0 was created at 2'
+```javascript
+// Array.reverse() triggers *delete* observers once for each element in
+// their old positions and *create* observers once for each element in
+// their new positions.
+a.reverse(); // alerts in order:
+    '2 was deleted from 2'
+    '1 was deleted from 1'
+    '0 was deleted from 0'
+    '2 was created at 0'
+    '1 was created at 1'
+    '0 was created at 2'
+```
 
 ### shift
 
-    // Array.shift() triggers *delete* observers once for the shifted element:
-    a.shift(); // alerts '0 was removed from 0'
+```javascript
+// Array.shift() triggers *delete* observers once for the shifted element:
+a.shift(); // alerts '0 was removed from 0'
+```
 
 ### sort
 
-    // Array.sort() triggers *delete* observers once for each element in
-    // their old positions and *create* observers once for each element in
-    // their new positions.
-    a.sort(function(a, b) { return a < b }); // alerts in order:
-        '2 was removed from 2'
-        '1 was removed from 1'
-        '0 was removed from 0'
-        '2 was created at 0'
-        '1 was created at 1'
-        '0 was created at 2'
-        
+```javascript
+// Array.sort() triggers *delete* observers once for each element in
+// their old positions and *create* observers once for each element in
+// their new positions.
+a.sort(function(a, b) { return a < b }); // alerts in order:
+    '2 was removed from 2'
+    '1 was removed from 1'
+    '0 was removed from 0'
+    '2 was created at 0'
+    '1 was created at 1'
+    '0 was created at 2'
+```
+    
 ### splice
 
-    // Array.splice() triggers *delete* observers once for each deleted 
-    // element in their old positions and *create* observers once for each new 
-    // element in their new positions.
-    a.splice(0, 2, 'zero', 'one'); // alerts in order:
-        '0 was removed from 0'
-        'zero was created at 0'
-        'one was created at 1'
+```javascript
+// Array.splice() triggers *delete* observers once for each deleted 
+// element in their old positions and *create* observers once for each new 
+// element in their new positions.
+a.splice(0, 2, 'zero', 'one'); // alerts in order:
+    '0 was removed from 0'
+    'zero was created at 0'
+    'one was created at 1'
+```
 
 ### unshift
 
-    // Array.unshift() triggers *create* observers once for the unshifted element.
-    a.unshift(-1); // alerts '-1 was created at 0'
+```javascript
+// Array.unshift() triggers *create* observers once for the unshifted element.
+a.unshift(-1); // alerts '-1 was created at 0'
+```
 
 ## Why are delete observers called in reverse order?
 
-It makes life easier when you need to delete UI components based on their index.
+It makes life easier when you need to delete multiple UI components based on their index.
 
