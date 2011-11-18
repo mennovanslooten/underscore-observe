@@ -204,4 +204,6 @@ Substantial parts of this code were written during office hours at [Aan Zee](htt
 
 The dependency on [Underscore](http://documentcloud.github.com/underscore/) is no accident. It is made of pure awesome.
 
-The [todo-list demo](http://experiments.mennovanslooten.nl/2011/observable-arrays/todo.html) concept and design is of course blatantly stolen from [Backbone](http://backbonejs.org/)'s [todo-list demo](http://backbonejs.org/examples/todos/index.html) by [Jérôme Gravel-Niquet](http://jgn.me/). No code from that demo was re-used, however.
+IE7 support is courtesy of [Douglas Crockford's json2.js](https://github.com/douglascrockford/JSON-js).
+
+The [todo-list demo](http://experiments.mennovanslooten.nl/2011/observable-arrays/todo.html) concept and design is of course blatantly stolen from [Backbone](http://backbonejs.org/)'s [todo-list demo](http://backbonejs.org/examples/todos/index.html) by [Jérôme Gravel-Niquet](http://jgn.me/). No code was re-used, however.
