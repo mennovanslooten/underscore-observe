@@ -19,7 +19,7 @@ _.observe(some_array, 'delete', function(old_item, item_index)           { /* ca
 Additionally, there's the "generic" observer, which is called for every change.
 
 ```javascript
-_.observe(some_array, function(new_array, old_array) { });
+_.observe(some_array, function(new_array, old_array) { /* called for every change */ });
 ```
 
 ## The long story
