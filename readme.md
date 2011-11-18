@@ -198,3 +198,13 @@ a.splice(0, 3, 'Hello', 'world'); // alerts in order:
 
 It makes life easier when you need to delete multiple UI components based on their index.
 
+## Acknowledgements
+
+Substantial parts of this code were written during office hours at [Aan
+Zee](http://www.aanzee.nl). Big thanks to them for encouraging me to release
+the source. 
+
+The dependency on [Underscore](http://documentcloud.github.com/underscore/) is
+no accident. It is made of pure awesome.
+
+The [todo-list demo](http://experiments.mennovanslooten.nl/2011/observable-arrays/todo.html) concept and design is of course blatantly stolen from [Backbone](http://backbonejs.org/)'s [todo-list demo](http://backbonejs.org/examples/todos/index.html) by [Jérôme Gravel-Niquet](http://jgn.me/). No code from that demo was re-used, however.

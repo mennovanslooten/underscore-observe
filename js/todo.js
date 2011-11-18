@@ -2,20 +2,13 @@
 
     // Our data source
     var _todos = [];
+
+    // The element where all our todo items end up
     var _todo_list = $('#todo-list');
 
 
-    function createTodoElement(item) {
-        var template = $('#todo-item-template').html();
-        var element = $(template);
-        element.find(':checkbox')[0].checked = item.done;
-        element.find('span').text(item.name);
-        return element;
-    }
-
-
     /* ################################################################
-       Observers
+       Array Observers
     ################################################################ */
 
     // Insert new element
@@ -59,7 +52,7 @@
 
 
     /* ################################################################
-       Event handlers
+       UI Event handlers
     ################################################################ */
 
     // Check/uncheck handler checkbox
@@ -99,5 +92,19 @@
             $(this).val('');
         }
     });
+
+
+    /* ################################################################
+       Todo element template
+    ################################################################ */
+
+    function createTodoElement(item) {
+        var template = $('#todo-item-template').html();
+        var element = $(template);
+        element.find(':checkbox')[0].checked = item.done;
+        element.find('span').text(item.name);
+        return element;
+    }
+
 
 })(jQuery);

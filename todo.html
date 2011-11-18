@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 <html>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <head>
         <title>Todo</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link href="css/todo.css" rel="stylesheet">
     </head>
 
@@ -12,7 +12,7 @@
             <h1>Todos</h1>
 
             <p>
-                <input type="text" placeholder="What needs to be done?" id="new-todo" autofocus>
+                <input type="text" placeholder="What needs to be done?" id="new-todo">
             </p>
             
             <ol id="todo-list"></ol>
@@ -26,6 +26,14 @@
             </p>
 
         </div>
+
+
+        <div id="info">
+            <p>
+                This is a technical demo of <a href="https://github.com/mennovanslooten/Observable-Arrays/">Observable Arrays</a>, a JavaScript utility to make standard arrays observable. Its concept and design are inspired by <a href="http://jgn.me/">Jérôme Gravel-Niquet</a>'s <a href="http://backbonejs.org/examples/todos/index.html">Todo-list demo</a>.
+            </p>
+        </div>
+
 
         <script type="text/template" id="todo-item-template">
             <li>
