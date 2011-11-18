@@ -11,9 +11,9 @@ Simply include the `underscore.observable.js` file and its dependencies `undersc
 There are 3 specific types of changes observers can be tied to: create, update and delete. The observers are always triggered *after* the change has taken place.
 
 ```javascript
-_.observe(some_array, 'create', function(new_item, item_index) { });
-_.observe(some_array, 'update', function(new_item, old_item, item_index) { });
-_.observe(some_array, 'delete', function(old_item, item_index) { });
+_.observe(some_array, 'create', function(new_item, item_index)           { /* called for new elements     */ });
+_.observe(some_array, 'update', function(new_item, old_item, item_index) { /* called for changed elements */ });
+_.observe(some_array, 'delete', function(old_item, item_index)           { /* called for deleted elements */ });
 ```
 
 Additionally, there's the "generic" observer, which is called for every change.
