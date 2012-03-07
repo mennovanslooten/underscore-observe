@@ -54,18 +54,23 @@
             if (old_length != new_length || JSON.stringify(_old_subject) != JSON.stringify(subject)) {
                 var max = Math.max(new_length, old_length) - 1;
 
-                for (var i = max; i >= 0; i--) {
-                    var old_item = _old_subject[i];
-                    var new_item = subject[i];
-                    if (i > old_length - 1) {
-                        callCreateSubscribers(new_item, i);
-                    } else if (i > new_length - 1) {
-                        callDeleteSubscribers(old_item, i);
-                    } else if (!_.isEqual(new_item, old_item)) {
-                        callUpdateSubscribers(new_item, old_item, i);
-                    }
-                }
-
+    			// quick loop locking fix by Menno van Slooten
+                // needs a proper fix
+				try {
+	                for (var i = max; i >= 0; i--) {
+	                    var old_item = _old_subject[i];
+	                    var new_item = subject[i];
+	                    if (i > old_length - 1) {
+	                        callCreateSubscribers(new_item, i);
+	                    } else if (i > new_length - 1) {
+	                        callDeleteSubscribers(old_item, i);
+	                    } else if (!_.isEqual(new_item, old_item)) {
+	                        callUpdateSubscribers(new_item, old_item, i);
+	                    }
+	                }
+				}
+				catch (e) {}
+				
                 reset();
             }
         }
@@ -173,7 +178,7 @@
 
 
         setInterval(detectChanges, 250);
-
+        
 
         return {
             unbind: function(type, handler) {
@@ -244,5 +249,4 @@
     }
 
 })();
-
 
