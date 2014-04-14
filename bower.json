@@ -1,0 +1,8 @@
+{
+	"name": "underscore-observable-arrays",
+	"version": "0.0.1",
+	"keywords": ["array", "events"],
+	"dependencies": {
+		"underscore": ">= 1.2.1"
+	}
+}
