@@ -214,6 +214,32 @@
             _observables[index].bind(type, f);
             return subject;
         },
+        
+         observeOnce: function(subject, type, f) {
+            if (!_.isArray(subject)) {
+                throw "subject should be a array";
+            }
+
+            if (_.isFunction(type)) {
+                f = type;
+                type = 'generic';
+            }
+
+            var index = _.indexOf(_subjects, subject);
+            if (index == -1) {
+                index = _subjects.length;
+                _subjects.push(subject);
+                var observable = new ObservableArray(subject);
+                _observables.push(observable);
+	            _observables[index].bind(type, f);
+	            
+	            // return a true if already bound
+	            return true;
+            }
+            
+            // return a false if not bound
+            return false;
+        },
 
 
         unobserve: function(subject, type, f) {
