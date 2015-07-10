@@ -165,9 +165,10 @@
         // returns the new length of the array.
         subject.unshift = function() {
             detectChanges();
-            var new_item = arguments[0];
             var new_length = Array.prototype.unshift.apply(this, arguments);
-            callCreateSubscribers(new_item, 0);
+            _.each(arguments, function(new_item, i) {
+                callCreateSubscribers(new_item, i);
+            });
             reset();
             return new_length;
         };
