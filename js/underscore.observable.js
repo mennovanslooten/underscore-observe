@@ -5,6 +5,7 @@
 
 
     function ObservableArray(subject) {
+        var _first_bind = true;
         var _old_subject = [];
         var _handlers = {
             generic: [],
@@ -91,7 +92,7 @@
         };
 
 
-        // push: Adds one or more elements to the end of an array and returns 
+        // push: Adds one or more elements to the end of an array and returns
         // the new length of the array.
         subject.push = function() {
             detectChanges();
@@ -118,7 +119,7 @@
         };
 
 
-        // shift: Removes the first element from an array and returns that 
+        // shift: Removes the first element from an array and returns that
         // element.
         subject.shift = function() {
             detectChanges();
@@ -186,7 +187,11 @@
                 } else if (type == 'create') {
                     _.each(subject, handler);
                 }
-                _old_subject = JSON.parse(JSON.stringify(subject));
+
+                if (_first_bind) {
+                    _old_subject = JSON.parse(JSON.stringify(subject));
+                    _first_bind = false;
+                }
             }
         };
 
