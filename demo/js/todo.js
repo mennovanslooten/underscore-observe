@@ -1,5 +1,18 @@
 (function($) {
 
+
+    // Little jQuery utility function to insert an element at a certain index
+    $.fn.insertAt = function insertAt(index, element) {
+        if (index === 0) {
+            this.prepend(element);
+        } else if (index < this.length - 1) {
+            $(this[index]).before(element);
+        } else {
+            this.append(element);
+        }
+        return this;
+    };
+
     // Our data source
     var _todos = [];
 
@@ -40,7 +53,7 @@
         var done = _.filter(_todos, function(item) {
             return item.done;
         }).length;
-        
+
         // Update "XXX left"
         $('.remaining').text(total - done);
 

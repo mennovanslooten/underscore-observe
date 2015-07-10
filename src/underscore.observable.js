@@ -1,3 +1,5 @@
+'use strict';
+
 (function() {
 
     var _subjects = [];
@@ -52,7 +54,7 @@
             var old_length = _old_subject.length;
             var new_length = subject.length;
 
-            if (old_length != new_length || JSON.stringify(_old_subject) != JSON.stringify(subject)) {
+            if (old_length !== new_length || JSON.stringify(_old_subject) !==  JSON.stringify(subject)) {
                 var max = Math.max(new_length, old_length) - 1;
 
                 for (var i = max; i >= 0; i--) {
@@ -145,7 +147,7 @@
 
 
         // splice: Adds and/or removes elements from an array.
-        subject.splice = function(i, length /*, insert */) {
+        subject.splice = function(i /*, length , insert */) {
             detectChanges();
             var insert = Array.prototype.slice.call(arguments, 2);
             var deleted = Array.prototype.splice.apply(this, arguments);
@@ -178,14 +180,14 @@
 
 
         return {
-            unbind: function(type, handler) {
+            unbind: function(/* type, handler */) {
                 // TODO
             },
             bind: function(type, handler) {
                 _handlers[type].push(handler);
-                if (type == 'generic') {
+                if (type === 'generic') {
                     handler(subject, _old_subject);
-                } else if (type == 'create') {
+                } else if (type === 'create') {
                     _.each(subject, handler);
                 }
 
@@ -202,7 +204,7 @@
     _.mixin({
         observe: function(subject, type, f) {
             if (!_.isArray(subject)) {
-                throw "subject should be a array";
+                throw 'subject should be a array';
             }
 
             if (_.isFunction(type)) {
@@ -211,7 +213,7 @@
             }
 
             var index = _.indexOf(_subjects, subject);
-            if (index == -1) {
+            if (index === -1) {
                 index = _subjects.length;
                 _subjects.push(subject);
                 var observable = new ObservableArray(subject);
@@ -222,7 +224,7 @@
         },
 
 
-        unobserve: function(subject, type, f) {
+        unobserve: function(subject/*, type, f*/) {
             // TODO
             // behavior:
             //  - no arguments: remove all observables
@@ -233,21 +235,6 @@
             return subject;
         }
     });
-
-
-    // Little jQuery utility function to insert an element at a certain index
-    if (typeof jQuery != 'undefined' && typeof jQuery.fn.insertAt == 'undefined') {
-        jQuery.fn.insertAt = function insertAt(index, element) {
-            if (index === 0) {
-                this.prepend(element);
-            } else if (index < this.length - 1) {
-                $(this[index]).before(element);
-            } else {
-                this.append(element);
-            }
-            return this;
-        };
-    }
 
 })();
 
