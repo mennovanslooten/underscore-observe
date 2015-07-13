@@ -1,8 +1,8 @@
 'use strict';
 
 var assert = require('assert');
-var _ = require('../lib/underscore');
-global._ = _;
+global._ = require('underscore');
+
 require('../src/underscore.observable');
 
 
