@@ -6,7 +6,8 @@ This is an extension to [Underscore](http://documentcloud.github.com/underscore/
 
 ### How do I use this?
 
-Simply include the `underscore.observable.js` file and its dependencies `underscore.js` and (if you want to support IE7) `json2.js` and you're good to go.
+Simply include the `underscore-observe.js` file and its dependencies `underscore.js` and (if you want to support IE7) `json2.js` and you're good to go.
+If you prefer, you can use [lodash](https://lodash.com/) as an alternative to underscore'.
 
 There are 3 specific types of changes observers can be tied to: create, update and delete. The observers are always triggered *after* the change has taken place.
 
@@ -86,7 +87,7 @@ Of course, check out [this simple todo-list](http://mennovanslooten.github.com/O
 
 ### That looks rather familiar.
 
-It's, ehm, *inspired* by [Backbone](http://backbonejs.org/)'s [todo-list demo](http://backbonejs.org/examples/todos/index.html).  
+It's, ehm, *inspired* by [Backbone](http://backbonejs.org/)'s [todo-list demo](http://backbonejs.org/examples/todos/index.html).
 
 ### Inspired?
 
@@ -200,7 +201,7 @@ It makes life easier when you need to delete multiple UI components based on the
 
 ## Acknowledgements
 
-Substantial parts of this code were written during office hours at [Aan Zee](http://www.aanzee.nl). Big thanks to them for encouraging me to release the source. 
+Substantial parts of this code were written during office hours at [Aan Zee](http://www.aanzee.nl). Big thanks to them for encouraging me to release the source.
 
 The dependency on [Underscore](http://documentcloud.github.com/underscore/) is no accident. It is made of pure awesome.
 
