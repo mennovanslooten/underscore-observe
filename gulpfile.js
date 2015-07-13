@@ -9,7 +9,7 @@ var mocha = require('gulp-mocha');
 
 var src_js = './underscore-observe.js';
 var demo_js = './demo/js/todo.js';
-var tests_js = './tests/**/*.js';
+var tests_js = './test/**/*.js';
 var all_js = [src_js, demo_js, tests_js];
 
 
@@ -27,7 +27,6 @@ gulp.task('default', ['lint:js', 'test:js']);
 
 gulp.task('watch', ['default'], function() {
     gulp.watch(all_js, ['default']);
-    //gulp.watch(all_js, ['test:js']);
 });
 
 
@@ -55,9 +54,15 @@ gulp.task('jshint', function() {
 });
 
 
-gulp.task('mocha', function(cb) {
+gulp.task('mocha', function() {
     return gulp.src(tests_js, {read: false})
-        .pipe(mocha());
+        .pipe(mocha())
+        .once('error', function () {
+            process.exit(1);
+        })
+        .once('end', function () {
+            process.exit();
+        });
 });
 
 

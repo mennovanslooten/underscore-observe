@@ -19,7 +19,7 @@
     "type": "git",
     "url": "git+https://github.com/mennovanslooten/Observable-Arrays.git"
   },
-  "author": "",
+  "author": "Menno van Slooten",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/mennovanslooten/Observable-Arrays/issues"
