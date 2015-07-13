@@ -5,7 +5,11 @@ var jscs = require('gulp-jscs');
 var jshint = require('gulp-jshint');
 //var sourcemaps = require('gulp-sourcemaps');
 var plumber = require('gulp-plumber');
-//var mocha = require('gulp-mocha');
+var mocha = require('gulp-mocha');
+
+var src_js = './src/**/*.js';
+var tests_js = './tests/**/*.js';
+var all_js = [src_js, tests_js];
 
 
 var onError = function(err) {
@@ -17,11 +21,12 @@ var onError = function(err) {
  * META TASKS
  * ################################################################ */
 
-gulp.task('default', ['build:js']);
+gulp.task('default', ['lint:js', 'test:js']);
 
 
 gulp.task('watch', ['default'], function() {
-    gulp.watch('./src/**/*.js', ['build:js']);
+    gulp.watch(all_js, ['default']);
+    //gulp.watch(all_js, ['test:js']);
 });
 
 
@@ -29,13 +34,12 @@ gulp.task('watch', ['default'], function() {
  * JAVASCRIPT TASKS
  * ################################################################ */
 
-gulp.task('build:js', ['lint:js', /* 'test:js', */]);
 gulp.task('lint:js', ['jscs', 'jshint']);
-//gulp.task('test:js', [[>'flow', <] 'mocha']);
+gulp.task('test:js', ['mocha']);
 
 
 gulp.task('jscs', function() {
-    return gulp.src('./src/**/*.js')
+    return gulp.src(all_js)
         .pipe(plumber({
             errorHandler: onError
         }))
@@ -44,15 +48,15 @@ gulp.task('jscs', function() {
 
 
 gulp.task('jshint', function() {
-    return gulp.src('./src/**/*.js')
+    return gulp.src(all_js)
         .pipe(jshint('.jshintrc'))
         .pipe(jshint.reporter('default'));
 });
 
 
-//gulp.task('mocha', function(cb) {
-    //return gulp.src('./test/mocha/*.js', {read: false})
-        //.pipe(mocha({reporter: 'mocha-silent-reporter'}));
-//});
+gulp.task('mocha', function(cb) {
+    return gulp.src(tests_js, {read: false})
+        .pipe(mocha());
+});
 
 
