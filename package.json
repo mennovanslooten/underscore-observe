@@ -2,7 +2,7 @@
   "name": "underscore-observe",
   "version": "1.0.0",
   "description": "",
-  "main": "src/underscore.observable.js",
+  "main": "underscore-observe.js",
   "dependencies": {},
   "devDependencies": {
     "gulp": "^3.9.0",
@@ -13,14 +13,14 @@
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "test": "mocha tests"
+    "test": "./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mennovanslooten/Observable-Arrays.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/mennovanslooten/Observable-Arrays/issues"
   },

@@ -7,9 +7,10 @@ var jshint = require('gulp-jshint');
 var plumber = require('gulp-plumber');
 var mocha = require('gulp-mocha');
 
-var src_js = './src/**/*.js';
+var src_js = './underscore-observe.js';
+var demo_js = './demo/js/todo.js';
 var tests_js = './tests/**/*.js';
-var all_js = [src_js, tests_js];
+var all_js = [src_js, demo_js, tests_js];
 
 
 var onError = function(err) {

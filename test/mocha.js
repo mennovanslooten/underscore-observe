@@ -3,7 +3,7 @@
 var assert = require('assert');
 global._ = require('underscore');
 
-require('../src/underscore.observable');
+require('../underscore-observe');
 
 
 function arrayEqual(a, b) {
