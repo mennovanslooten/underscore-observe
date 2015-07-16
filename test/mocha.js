@@ -1,303 +1,325 @@
 'use strict';
 
 var assert = require('assert');
-global._ = require('underscore');
+var sinon = require('sinon');
+var _ = require('underscore');
 
-require('../underscore-observe');
+var delay = 300;
+
+require('../underscore-observe')(_);
 
 
-function arrayEqual(a, b) {
-    return JSON.stringify(a) === JSON.stringify(b);
+function format(arr) {
+    return JSON.stringify(arr, null, '  ');
 }
 
 
-describe('underscore.observe.js', function() {
+function assertArguments(spy, expected) {
+    assert.equal(spy.callCount, expected.length);
+
+    for (var i = 0; i < spy.callCount; i++) {
+        var spy_call = spy.getCall(i);
+        var args = expected[i].concat();
+        args.unshift(spy_call);
+        sinon.assert.calledWithExactly.apply(sinon, args);
+    }
+}
+
+
+function getSubject() {
+    return [0, 1, 2];
+}
+
+
+describe('underscore-observe', function() {
     describe('Generic Observers', function() {
-        var observed_array = [0, 1, 2, 3];
-        var expected_new_array;
-        var expected_old_array;
-        var expected_index;
-        var generic_observer_was_called;
 
-        beforeEach(function() {
-            expected_new_array = null;
-            expected_old_array = observed_array.concat();
-            expected_index = null;
-            generic_observer_was_called = false;
-        });
-
-        // generic observer
-        function genericObserver(new_array, old_array) {
-            assert(arrayEqual(new_array, expected_new_array));
-            assert(arrayEqual(old_array, expected_old_array));
-            generic_observer_was_called = true;
-        }
-
-        // initial
         it('should be called when bound', function() {
-            expected_new_array = [0, 1, 2, 3];
-            expected_old_array = [];
-            _.observe(observed_array, genericObserver);
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, spy);
+            sinon.assert.calledWithExactly(spy.lastCall, [0, 1, 2], []);
         });
 
-        // Deleting array mutator methods
+
         it('should be called when an element is popped', function() {
-            expected_new_array = [0, 1, 2];
-            observed_array.pop();
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, spy);
+            subject.pop();
+            sinon.assert.calledWithExactly(spy.lastCall, [0, 1], [0, 1, 2]);
         });
+
 
         it('should be called when an element is shifted', function() {
-            expected_new_array = [1, 2];
-            observed_array.shift();
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, spy);
+            subject.shift();
+            sinon.assert.calledWithExactly(spy.lastCall, [1, 2], [0, 1, 2]);
         });
 
-        it('should be called when elements are spliced', function() {
-            expected_new_array = [];
-            observed_array.splice(0, 2);
+
+        it('should be called when an element is spliced out', function() {
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, spy);
+            subject.splice(1, 1);
+            sinon.assert.calledWithExactly(spy.lastCall, [0, 2], [0, 1, 2]);
         });
 
-        // Creating array mutator methods
-        it('should be called when elements are spliced in', function() {
-            expected_new_array = [1, 2];
-            observed_array.splice(0, 0, 1, 2);
+
+        it('should be called when an element is spliced in', function() {
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, spy);
+            subject.splice(2, 0, 'foo');
+            sinon.assert.calledWithExactly(spy.lastCall, [0, 1, 'foo', 2], [0, 1, 2]);
         });
+
 
         it('should be called when an element is unshifted', function() {
-            expected_new_array = [0, 1, 2];
-            observed_array.unshift(0);
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, spy);
+            subject.unshift('foo');
+            sinon.assert.calledWithExactly(spy.lastCall, ['foo', 0, 1, 2], [0, 1, 2]);
         });
+
 
         it('should be called when an element is pushed', function() {
-            expected_new_array = [0, 1, 2, 3];
-            observed_array.push(3);
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, spy);
+            subject.push('foo');
+            sinon.assert.calledWithExactly(spy.lastCall, [0, 1, 2, 'foo'], [0, 1, 2]);
         });
 
-        // Completely changing mutator methods
         it('should be called when reversed', function() {
-            expected_new_array = [3, 2, 1, 0];
-            observed_array.reverse();
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, spy);
+            subject.reverse();
+            sinon.assert.calledWithExactly(spy.lastCall, [2, 1, 0], [0, 1, 2]);
         });
 
         it('should be called when sorted', function() {
-            expected_new_array = [0, 1, 2, 3];
-            observed_array.sort();
+            var subject = [3, 1, 2, 0];
+            var spy = sinon.spy();
+            _.observe(subject, spy);
+            subject.sort();
+            sinon.assert.calledWithExactly(spy.lastCall, [0, 1, 2, 3], [3, 1, 2, 0]);
         });
 
-        // Async callers
         it('should be called when length is changed', function(done) {
-            expected_new_array = [0, 1, 2];
-            observed_array.length = 3;
-            setTimeout(done, 500);
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, spy);
+            subject.length = 2;
+            setTimeout(function() {
+                sinon.assert.calledWithExactly(spy.lastCall, [0, 1], [0, 1, 2]);
+                done();
+            }, delay);
         });
 
         it('should be called when an element is changed', function(done) {
-            expected_new_array = [0, 'hello', 2];
-            observed_array[1] = 'hello';
-            setTimeout(done, 500);
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, spy);
+            subject[1] = 'hello';
+            setTimeout(function() {
+                sinon.assert.calledWithExactly(spy.lastCall, [0, 'hello', 2], [0, 1, 2]);
+                done();
+            }, delay);
         });
 
     });
 
 
     describe('Create Observers', function() {
-        var observed_array = ['hello', 'world'];
-        var expected_items;
-        var expected_indices;
-        var create_observer_was_called;
 
-        beforeEach(function() {
-            create_observer_was_called = false;
-        });
-
-        // generic observer
-        function createObserver(new_item, item_index) {
-            var expected_item = expected_items.shift();
-            var expected_index = expected_indices.shift();
-            assert.equal(new_item, expected_item);
-            assert.equal(item_index, expected_index);
-            create_observer_was_called = true;
-        }
-
-        // initial
         it('should be called once for each existing element when bound', function() {
-            expected_items = ['hello', 'world'];
-            expected_indices = [0, 1];
-            _.observe(observed_array, 'create', createObserver);
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'create', spy);
+            assertArguments(spy, [
+                [0, 0],
+                [1, 1],
+                [2, 2]
+            ]);
         });
 
-        // Creating array mutator methods
         it('should be called when an element is unshifted', function() {
-            expected_items = [0];
-            expected_indices = [0];
-            observed_array.unshift(0);
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'create', spy);
+            subject.unshift('foo');
+            sinon.assert.calledWithExactly(spy.lastCall, 'foo', 0);
         });
 
         it('should be called when an element is pushed', function() {
-            expected_items = [3];
-            expected_indices = [3];
-            observed_array.push(3);
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'create', spy);
+            subject.push('foo');
+            sinon.assert.calledWithExactly(spy.lastCall, 'foo', 3);
         });
 
         it('should be called when elements are spliced in', function() {
-            expected_items = [1, 2];
-            expected_indices = [1, 2];
-            observed_array.splice(1, 2, 1, 2);
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'create', spy);
+            subject.splice(1, 2, 'foo', 'bar');
+            sinon.assert.calledWithExactly(spy.getCall(3), 'foo', 1);
+            sinon.assert.calledWithExactly(spy.getCall(4), 'bar', 2);
         });
 
-        // Completely changing mutator methods
         it('should be called when reversed', function() {
-            expected_items = [3, 2, 1, 0];
-            expected_indices = [0, 1, 2, 3];
-            observed_array.reverse();
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'create', spy);
+            subject.reverse();
+            sinon.assert.calledWithExactly(spy.getCall(3), 2, 0);
+            sinon.assert.calledWithExactly(spy.getCall(4), 1, 1);
+            sinon.assert.calledWithExactly(spy.getCall(5), 0, 2);
         });
 
         it('should be called when sorted', function() {
-            expected_items = [0, 1, 2, 3];
-            expected_indices = [0, 1, 2, 3];
-            observed_array.sort();
+            var subject = [1, 2, 0];
+            var spy = sinon.spy();
+            _.observe(subject, 'create', spy);
+            subject.sort();
+            sinon.assert.calledWithExactly(spy.getCall(3), 0, 0);
+            sinon.assert.calledWithExactly(spy.getCall(4), 1, 1);
+            sinon.assert.calledWithExactly(spy.getCall(5), 2, 2);
         });
 
-        // Async callers
         it('should be called when a new element is assigned', function(done) {
-            expected_items = [4];
-            expected_indices = [4];
-            observed_array[4] = 4;
-
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'create', spy);
+            subject[3] = 'foo';
             setTimeout(function() {
-                assert(create_observer_was_called);
+                //console.log(subject);
+                //console.log(format(spy.args));
+                sinon.assert.calledWithExactly(spy.lastCall, 'foo', 3);
                 done();
-            }, 500);
+            }, delay);
         });
     });
 
 
     describe('Delete Observers', function() {
-        var observed_array = [-1, 0, 'hello', 'world', 3, 4];
-        var expected_items;
-        var expected_indices;
-        var delete_observer_was_called;
 
-        beforeEach(function() {
-            delete_observer_was_called = false;
-        });
-
-        // generic observer
-        function deleteObserver(deleted_item, item_index) {
-            var expected_item = expected_items.shift();
-            var expected_index = expected_indices.shift();
-            assert.equal(deleted_item, expected_item);
-            assert.equal(item_index, expected_index);
-            delete_observer_was_called = true;
-        }
-
-        // initial
         it('should not be called when bound', function() {
-            _.observe(observed_array, 'delete', deleteObserver);
-            assert.equal(delete_observer_was_called, false);
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'delete', spy);
+            sinon.assert.notCalled(spy);
         });
 
-        // Deleting array mutator methods
         it('should be called when an element is popped', function() {
-            expected_items = [4];
-            expected_indices = [5];
-            observed_array.pop();
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'delete', spy);
+            subject.pop();
+            sinon.assert.calledWithExactly(spy.lastCall, 2, 2);
         });
 
         it('should be called when an element is shifted', function() {
-            expected_items = [-1];
-            expected_indices = [0];
-            observed_array.shift();
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'delete', spy);
+            subject.shift();
+            sinon.assert.calledWithExactly(spy.lastCall, 0, 0);
         });
 
         it('should be called when elements are spliced', function() {
-            expected_items = ['world', 'hello']; // Reverse order!
-            expected_indices = [2, 1];
-            observed_array.splice(1, 2, 1, 2);
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'delete', spy);
+            subject.splice(1, 2, 'foo', 'bar');
+            sinon.assert.calledWithExactly(spy.getCall(0), 2, 2);
+            sinon.assert.calledWithExactly(spy.getCall(1), 1, 1);
         });
 
-        // Completely changing mutator methods
-        it('should be called when reversed', function() {
-            expected_items = [3, 2, 1, 0];
-            expected_indices = [3, 2, 1, 0];
-            observed_array.reverse();
+        it('should be called when elements are reversed', function() {
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'delete', spy);
+            subject.reverse();
+            sinon.assert.calledWithExactly(spy.getCall(0), 2, 2);
+            sinon.assert.calledWithExactly(spy.getCall(1), 1, 1);
+            sinon.assert.calledWithExactly(spy.getCall(2), 0, 0);
         });
 
-        it('should be called when sorted', function() {
-            expected_items = [0, 1, 2, 3];
-            expected_indices = [3, 2, 1, 0];
-            observed_array.sort();
+        it('should be called when elements are sorted', function() {
+            var subject = [3, 1, 2, 0];
+            var spy = sinon.spy();
+            _.observe(subject, 'delete', spy);
+            subject.sort();
+            sinon.assert.calledWithExactly(spy.getCall(0), 0, 3);
+            sinon.assert.calledWithExactly(spy.getCall(1), 2, 2);
+            sinon.assert.calledWithExactly(spy.getCall(2), 1, 1);
+            sinon.assert.calledWithExactly(spy.getCall(3), 3, 0);
         });
 
-        // Async callers
-        it('should be called when length is changed', function(done) {
-            expected_items = [3, 2];
-            expected_indices = [3, 2];
-            observed_array.length = 2;
-
+        it('should be called when length is shortened', function(done) {
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'delete', spy);
+            subject.length = 1;
             setTimeout(function() {
-                assert(delete_observer_was_called);
+                sinon.assert.calledWithExactly(spy.getCall(0), 2, 2);
+                sinon.assert.calledWithExactly(spy.getCall(1), 1, 1);
                 done();
-            }, 500);
+            }, delay);
         });
     });
 
 
     describe('Update Observers', function() {
-        var observed_array = ['hello'];
-        var expected_new_items;
-        var expected_old_items;
-        var expected_indices;
-        var update_observer_was_called;
 
-        beforeEach(function() {
-            update_observer_was_called = false;
-        });
-
-        // update observer
-        function updateObserver(new_item, old_item, item_index) {
-            var expected_new_item = expected_new_items.shift();
-            var expected_old_item = expected_old_items.shift();
-            var expected_index = expected_indices.shift();
-            assert.equal(new_item, expected_new_item);
-            assert.equal(old_item, expected_old_item);
-            assert.equal(item_index, expected_index);
-            update_observer_was_called = true;
-        }
-
-
-        // initial
         it('should not be called when bound', function() {
-            _.observe(observed_array, 'update', updateObserver);
-            assert.equal(update_observer_was_called, false);
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'update', spy);
+            sinon.assert.notCalled(spy);
         });
 
-        // Async callers
-        it('should be called when a new element is assigned', function(done) {
-            expected_new_items = ['world'];
-            expected_old_items = ['hello'];
-            expected_indices = [0];
-            observed_array[0] = 'world';
+        it('should not be called when new elements are appended', function() {
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'update', spy);
+            subject[3] = 'foo';
+            subject.push('bar');
+            sinon.assert.notCalled(spy);
+        });
 
+        it('should be called when a new element is assigned', function(done) {
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'update', spy);
+            subject[2] = 'foo'
             setTimeout(function() {
-                assert(update_observer_was_called);
+                sinon.assert.calledWithExactly(spy.lastCall, 'foo', 2, 2);
                 done();
-            }, 500);
+            }, delay);
         });
 
         it('should be called when multiple new elements are assigned', function(done) {
-            observed_array.push('foo');
-
-            expected_new_items = ['bar', 'hello'];
-            expected_old_items = ['foo', 'world'];
-            expected_indices = [1, 0];
-            observed_array[0] = 'hello';
-            observed_array[1] = 'bar';
-
+            var subject = getSubject();
+            var spy = sinon.spy();
+            _.observe(subject, 'update', spy);
+            subject[1] = 'foo'
+            subject[2] = 'bar'
             setTimeout(function() {
-                assert(update_observer_was_called);
+                sinon.assert.calledWithExactly(spy.getCall(0), 'bar', 2, 2);
+                sinon.assert.calledWithExactly(spy.getCall(1), 'foo', 1, 1);
                 done();
-            }, 500);
+            }, delay);
         });
-    });
 
+    });
 });
+

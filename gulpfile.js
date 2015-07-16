@@ -9,7 +9,7 @@ var mocha = require('gulp-mocha');
 
 var src_js = './underscore-observe.js';
 var demo_js = './demo/js/todo.js';
-var tests_js = './test/**/*.js';
+var tests_js = './test/mocha2.js';
 var all_js = [src_js, demo_js, tests_js];
 
 
