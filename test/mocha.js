@@ -322,4 +322,99 @@ describe('underscore-observe', function() {
         });
 
     });
+
+
+    describe('Unobserve', function() {
+
+        it('should remove all observers when called without arguments', function(done) {
+            var subject_0 = getSubject();
+            var subject_1 = getSubject();
+            var spy_0_generic = sinon.spy();
+            var spy_0_update = sinon.spy();
+            var spy_0_create = sinon.spy();
+            var spy_0_delete = sinon.spy();
+            var spy_1_generic = sinon.spy();
+            var spy_1_update = sinon.spy();
+            var spy_1_create = sinon.spy();
+            var spy_1_delete = sinon.spy();
+            _.observe(subject_0, spy_0_generic);
+            _.observe(subject_0, 'update', spy_0_update);
+            _.observe(subject_0, 'create', spy_0_create);
+            _.observe(subject_0, 'delete', spy_0_delete);
+            _.observe(subject_1, spy_1_generic);
+            _.observe(subject_1, 'update', spy_1_update);
+            _.observe(subject_1, 'create', spy_1_create);
+            _.observe(subject_1, 'delete', spy_1_delete);
+
+            // We need to reset the spies to check if they haven't been called
+            // after unobserve()
+            var spies = [
+                spy_0_generic, spy_0_create, spy_0_update, spy_0_delete,
+                spy_1_generic, spy_1_create, spy_1_update, spy_1_delete
+            ];
+            var subjects = [subject_0, subject_1];
+
+            _.each(spies, function(spy) {
+                spy.reset();
+            });
+
+            _.unobserve();
+
+            _.each(subjects, function(subject) {
+                subject.push('foo');
+                subject.unshift('bar');
+                subject.sort();
+                subject.reverse();
+                subject.splice(1, 2, 'hello', 'world');
+                subject.length = 2;
+                subject[3] = 'three';
+                console.log(subject);
+            });
+
+
+            setTimeout(function() {
+                _.each(spies, function(spy) {
+                    sinon.assert.notCalled(spy);
+                });
+                done();
+            }, delay);
+
+
+            /*
+            var subjects = [getSubject(), getSubject()];
+            var subject_spies = [
+                [sinon.spy(), sinon.spy(), sinon.spy(), sinon.spy()],
+                [sinon.spy(), sinon.spy(), sinon.spy(), sinon.spy()]
+            ];
+            _.each(subjects, function(subject, index) {
+                var spies = subject_spies[index];
+                _.observe(subject,
+            });
+            var subjects = [
+                {
+                    subject: getSubject(),
+                    spies: {
+                        generic: sinon.spy(),
+                        update: sinon.spy(),
+                        create: sinon.spy(),
+                        'delete': sinon.spy()
+                    }
+                },
+                {
+                    subject: getSubject(),
+                    spies: {
+                        generic: sinon.spy(),
+                        update: sinon.spy(),
+                        create: sinon.spy(),
+                        'delete': sinon.spy()
+                    }
+                }
+            ];
+            _.each(subjects, function(subject) {
+                _.each(subject.spies
+            });
+            */
+        });
+
+    });
 });

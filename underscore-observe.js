@@ -29,6 +29,7 @@
         Object.preventExtensions);
 
     function ObservableArray(subject) {
+        var _index = _subjects.length;
         var _first_bind = true;
         var _old_subject = [];
         var _handlers = {
@@ -73,6 +74,7 @@
 
 
         function detectChanges() {
+            //console.log('detectChanges', _index);
             var old_length = _old_subject.length;
             var new_length = subject.length;
 
@@ -212,11 +214,12 @@
         });
 
 
-        setInterval(detectChanges, 250);
+        //setInterval(detectChanges, 250);
         //detectChanges();
 
 
         return {
+            detectChanges: detectChanges,
             unbind: function(/* type, handler */) {
                 // TODO
             },
@@ -267,6 +270,15 @@
 
 
         unobserve: function(subject/*, type, f*/) {
+            console.log('unobserve:', arguments);
+            if (arguments.length === 0) {
+                console.log('clearing out subjects and observables');
+                //_subjects.length = 0;
+                //_observables.length = 0;
+                _.each(_observables, function(observable) {
+                    observable.unbind();
+                });
+            }
             // TODO
             // behavior:
             //  - no arguments: remove all observables
@@ -277,5 +289,16 @@
             return subject;
         }
     });
+
+
+    function detectAllChanges() {
+        console.log('detectAllChanges', _observables.length);
+        _.each(_observables, function(observable) {
+            observable.detectChanges();
+        });
+        setTimeout(detectAllChanges, 250);
+    }
+
+    detectAllChanges();
 
 }));
