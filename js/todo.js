@@ -1,4 +1,18 @@
+'use strict';
 (function($) {
+
+
+    // Little jQuery utility function to insert an element at a certain index
+    $.fn.insertAt = function insertAt(index, element) {
+        if (index === 0) {
+            this.prepend(element);
+        } else if (index < this.length - 1) {
+            $(this[index]).before(element);
+        } else {
+            this.append(element);
+        }
+        return this;
+    };
 
     // Our data source
     var _todos = [];
@@ -40,7 +54,7 @@
         var done = _.filter(_todos, function(item) {
             return item.done;
         }).length;
-        
+
         // Update "XXX left"
         $('.remaining').text(total - done);
 
@@ -63,14 +77,14 @@
 
 
     // Click handler delete button
-    _todo_list.on('click', 'button', function(e) {
+    _todo_list.on('click', 'button', function() {
         var index = $(this).parent().index();
         _todos.splice(index, 1);
     });
 
 
     // Click handler "Clear XXX completed items" button
-    $('button.clear').on('click', function(e) {
+    $('button.clear').on('click', function() {
         // Always loop in reverse when you delete items, otherwise the indexes
         // change during the loop
         for (var i = _todos.length - 1; i >= 0; i--) {
@@ -84,7 +98,7 @@
     // Handle enter in new todo input
     $('#new-todo').on('keyup', function(e) {
         var name = $(this).val();
-        if (name && e.which == 13) {
+        if (name && e.which === 13) {
             _todos.push({
                 name: name,
                 done: false
