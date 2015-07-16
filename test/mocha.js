@@ -8,10 +8,11 @@ var delay = 300;
 
 require('../underscore-observe')(_);
 
-
+/*
 function format(arr) {
     return JSON.stringify(arr, null, '  ');
 }
+*/
 
 
 function assertArguments(spy, expected) {
@@ -300,7 +301,7 @@ describe('underscore-observe', function() {
             var subject = getSubject();
             var spy = sinon.spy();
             _.observe(subject, 'update', spy);
-            subject[2] = 'foo'
+            subject[2] = 'foo';
             setTimeout(function() {
                 sinon.assert.calledWithExactly(spy.lastCall, 'foo', 2, 2);
                 done();
@@ -311,8 +312,8 @@ describe('underscore-observe', function() {
             var subject = getSubject();
             var spy = sinon.spy();
             _.observe(subject, 'update', spy);
-            subject[1] = 'foo'
-            subject[2] = 'bar'
+            subject[1] = 'foo';
+            subject[2] = 'bar';
             setTimeout(function() {
                 sinon.assert.calledWithExactly(spy.getCall(0), 'bar', 2, 2);
                 sinon.assert.calledWithExactly(spy.getCall(1), 'foo', 1, 1);
@@ -322,4 +323,3 @@ describe('underscore-observe', function() {
 
     });
 });
-

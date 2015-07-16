@@ -105,12 +105,10 @@
             // Use Object.defineProperty to prevent methods from appearing in
             // the subject's for in loop
             if (_es5_object_supported) {
-                console.log('defining property', name);
                 Object.defineProperty(subject, name, {
                     value: f
                 });
             } else {
-                console.log('overriding method', name);
                 subject[name] = f;
             }
         }
@@ -281,5 +279,3 @@
     });
 
 }));
-
-
