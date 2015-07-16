@@ -207,4 +207,4 @@ The dependency on [Underscore](http://documentcloud.github.com/underscore/) is n
 
 IE7 support is courtesy of [Douglas Crockford's json2.js](https://github.com/douglascrockford/JSON-js).
 
-The [todo-list demo](http://experiments.mennovanslooten.nl/2011/observable-arrays/todo.html) concept and design is of course blatantly stolen from [Backbone](http://backbonejs.org/)'s [todo-list demo](http://backbonejs.org/examples/todos/index.html) by [Jérôme Gravel-Niquet](http://jgn.me/). No code was re-used, however.
+The [todo-list demo](http://mennovanslooten.github.io/underscore-observe/) concept and design is of course blatantly stolen from [Backbone](http://backbonejs.org/)'s [todo-list demo](http://backbonejs.org/examples/todos/index.html) by [Jérôme Gravel-Niquet](http://jgn.me/). No code was re-used, however.
