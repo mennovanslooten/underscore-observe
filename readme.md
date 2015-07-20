@@ -72,10 +72,31 @@ a.pop(); // alerts 'too was removed at 2'
 
 // PLEASE NOTE: generic and create observers are also triggered once for each
 // element of the array when the observer is first bound. For the sake of
-// brevity, I'll leave those alerts out of the examples.
+// brevity, I've left those alerts out of the examples.
 ```
 
 Each of these events can be triggered in many different ways. There's more information below on what triggers which event.
+
+### How can I remove observers?
+
+The `_.unobserve()` utility removes observers. It can be used in five ways:
+
+```javascript
+// no arguments: remove all observables from all subjects
+_.unobserve();
+
+// only a subject: remove all observers for subject
+_.unobserve(subject);
+
+// subject + f: remove generic subsciber f for subject
+_.unobserve(subject, myGenericHandler);
+
+// subject + type: remove type subscriber for subject
+_.unobserve(subject, 'delete');
+
+//  subject + type + f: remove type subscriber f for subject
+_.unobserve(subject, 'delete', myDeleteHandler);
+```
 
 ### Why is this useful?
 

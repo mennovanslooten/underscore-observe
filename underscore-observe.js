@@ -10,6 +10,7 @@
     }
 }(function(_) {
 
+    var _detect_timeout;
     var _subjects = [];
     var _observables = [];
 
@@ -29,7 +30,6 @@
         Object.preventExtensions);
 
     function ObservableArray(subject) {
-        var _index = _subjects.length;
         var _first_bind = true;
         var _old_subject = [];
         var _handlers = {
@@ -74,7 +74,6 @@
 
 
         function detectChanges() {
-            //console.log('detectChanges', _index);
             var old_length = _old_subject.length;
             var new_length = subject.length;
 
@@ -220,8 +219,21 @@
 
         return {
             detectChanges: detectChanges,
-            unbind: function(/* type, handler */) {
-                // TODO
+            unbind: function(type, handler) {
+                if (_.isUndefined(type) && _.isUndefined(handler)) {
+                    _.each(_handlers, function(handler) {
+                        handler.length = 0;
+                    });
+                } else if (_.isString(type) && _.isUndefined(handler)) {
+                    _handlers[type].length = 0;
+                } else if (_.isFunction(type) && _.isUndefined(handler)) {
+                    handler = type;
+                    type = 'generic';
+                    _handlers[type] = _.without(_handlers[type], handler);
+                } else if (_.isString(type) && _.isFunction(handler)) {
+                    _handlers[type] = _.without(_handlers[type], handler);
+                }
+
             },
             bind: function(type, handler) {
                 _handlers[type].push(handler);
@@ -265,40 +277,57 @@
                 _observables.push(observable);
             }
             _observables[index].bind(type, f);
+
+            scheduleDetectAllChanges();
             return subject;
         },
 
 
-        unobserve: function(subject/*, type, f*/) {
-            console.log('unobserve:', arguments);
-            if (arguments.length === 0) {
-                console.log('clearing out subjects and observables');
-                //_subjects.length = 0;
-                //_observables.length = 0;
+        unobserve: function(subject, type, f) {
+            if (!arguments.length) {
+                // _.unobserve() removes all observers
                 _.each(_observables, function(observable) {
                     observable.unbind();
                 });
+                _subjects.length = 0;
+                _observables.length = 0;
+                return;
             }
-            // TODO
-            // behavior:
-            //  - no arguments: remove all observables
-            //  - only a subject: remove all observers for subject
-            //  - subject + f: remove generic subsciber f for subject
-            //  - subject + type: remove type subscriber for subject
-            //  - subject + type + f: remove type subscriber f for subject
+
+            if (!_.isArray(subject)) {
+                throw 'subject should be a array';
+            }
+
+            var index = _.indexOf(_subjects, subject);
+            if (index === -1) {
+                return;
+            }
+
+            _observables[index].unbind(type, f);
             return subject;
         }
     });
 
 
     function detectAllChanges() {
-        console.log('detectAllChanges', _observables.length);
+        if (!_observables.length) {
+            _detect_timeout = null;
+            return;
+        }
+
         _.each(_observables, function(observable) {
             observable.detectChanges();
         });
-        setTimeout(detectAllChanges, 250);
+
+        scheduleDetectAllChanges();
     }
 
-    detectAllChanges();
+
+    function scheduleDetectAllChanges() {
+        if (_detect_timeout) {
+            clearTimeout(_detect_timeout);
+        }
+        _detect_timeout = setTimeout(detectAllChanges, 250);
+    }
 
 }));
