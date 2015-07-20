@@ -19,12 +19,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mennovanslooten/Observable-Arrays.git"
+    "url": "git+https://github.com/mennovanslooten/underscore-observe.git"
   },
   "author": "Menno van Slooten",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mennovanslooten/Observable-Arrays/issues"
+    "url": "https://github.com/mennovanslooten/underscore-observe/issues"
   },
-  "homepage": "https://github.com/mennovanslooten/Observable-Arrays#readme"
+  "homepage": "https://github.com/mennovanslooten/underscore-observe#readme"
 }

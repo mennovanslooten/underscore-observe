@@ -104,7 +104,7 @@ If you have elements in your UI that are in some way dependent on the contents o
 
 ### Do you have any examples?
 
-Of course, check out [this simple todo-list](http://mennovanslooten.github.com/Observable-Arrays/) and then check out [the source](https://github.com/mennovanslooten/Observable-Arrays/blob/master/js/todo.js).
+Of course, check out [this simple todo-list](http://mennovanslooten.github.com/underscore-observe/) and then check out [the source](https://github.com/mennovanslooten/underscore-observe/blob/master/demo/js/todo.js).
 
 ### That looks rather familiar.
 
