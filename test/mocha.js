@@ -322,4 +322,165 @@ describe('underscore-observe', function() {
         });
 
     });
+
+
+    describe('Unobserve', function() {
+        var spies;
+        var subjects;
+
+
+
+        beforeEach(function() {
+            var subject_0 = getSubject();
+            var subject_1 = getSubject();
+            var spy_0_generic = sinon.spy();
+            var spy_0_update = sinon.spy();
+            var spy_0_create = sinon.spy();
+            var spy_0_delete = sinon.spy();
+            var spy_1_generic = sinon.spy();
+            var spy_1_update = sinon.spy();
+            var spy_1_create = sinon.spy();
+            var spy_1_delete = sinon.spy();
+            _.observe(subject_0, spy_0_generic);
+            _.observe(subject_0, 'update', spy_0_update);
+            _.observe(subject_0, 'create', spy_0_create);
+            _.observe(subject_0, 'delete', spy_0_delete);
+            _.observe(subject_1, spy_1_generic);
+            _.observe(subject_1, 'update', spy_1_update);
+            _.observe(subject_1, 'create', spy_1_create);
+            _.observe(subject_1, 'delete', spy_1_delete);
+
+            // We need to reset the spies to check if they haven't been called
+            // after unobserve()
+            spies = [
+                spy_0_generic, spy_0_create, spy_0_update, spy_0_delete,
+                spy_1_generic, spy_1_create, spy_1_update, spy_1_delete
+            ];
+            subjects = [subject_0, subject_1];
+
+            _.each(spies, function(spy) {
+                spy.reset();
+            });
+        });
+
+
+        function modifySubjects() {
+            _.each(subjects, function(subject) {
+                subject.push('foo');
+                subject.unshift('bar');
+                subject.sort();
+                subject.reverse();
+                subject.splice(1, 2, 'hello', 'world');
+                subject.length = 2;
+                subject[3] = 'three';
+            });
+        }
+
+
+        it('should remove all observers when called without arguments', function(done) {
+            //  no arguments: remove all observables
+            _.unobserve();
+            modifySubjects();
+
+            setTimeout(function() {
+                _.each(spies, function(spy) {
+                    sinon.assert.notCalled(spy);
+                });
+                done();
+            }, delay);
+        });
+
+        it('should remove a subject\'s observers', function(done) {
+            //  only a subject: remove all observers for subject
+            _.unobserve(subjects[0]);
+            modifySubjects();
+
+            setTimeout(function() {
+                _.each(spies, function(spy, index) {
+                    if (index > 3) {
+                        sinon.assert.called(spy);
+                    } else {
+                        sinon.assert.notCalled(spy);
+                    }
+                });
+                done();
+            }, delay);
+        });
+
+        it('should remove a subject\'s generic observers', function(done) {
+            // subject + f: remove generic subsciber f for subject
+            _.unobserve(subjects[0], spies[0]);
+            modifySubjects();
+
+            setTimeout(function() {
+                _.each(spies, function(spy, index) {
+                    if (index === 0) {
+                        // Only the first spy should have been unbound
+                        sinon.assert.notCalled(spy);
+                    } else {
+                        sinon.assert.called(spy);
+                    }
+                });
+                done();
+            }, delay);
+        });
+
+        it('should remove a subject\'s create observers', function(done) {
+            //  subject + type: remove type subscriber for subject
+            _.unobserve(subjects[0], 'create');
+            //  subject + type + f: remove type subscriber f for subject
+            _.unobserve(subjects[1], 'create', spies[5]);
+            modifySubjects();
+
+            setTimeout(function() {
+                _.each(spies, function(spy, index) {
+                    if (index === 1 || index === 5) {
+                        sinon.assert.notCalled(spy);
+                    } else {
+                        sinon.assert.called(spy);
+                    }
+                });
+                done();
+            }, delay);
+        });
+
+        it('should remove a subject\'s update observers', function(done) {
+            //  subject + type: remove type subscriber for subject
+            _.unobserve(subjects[0], 'update');
+            //  subject + type + f: remove type subscriber f for subject
+            _.unobserve(subjects[1], 'update', spies[6]);
+            modifySubjects();
+
+            setTimeout(function() {
+                _.each(spies, function(spy, index) {
+                    if (index === 2 || index === 6) {
+                        sinon.assert.notCalled(spy);
+                    } else {
+                        sinon.assert.called(spy);
+                    }
+                });
+                done();
+            }, delay);
+        });
+
+        it('should remove a subject\'s delete observers', function(done) {
+            //  subject + type: remove type subscriber for subject
+            _.unobserve(subjects[0], 'delete');
+            //  subject + type + f: remove type subscriber f for subject
+            _.unobserve(subjects[1], 'delete', spies[7]);
+            modifySubjects();
+
+            setTimeout(function() {
+                _.each(spies, function(spy, index) {
+                    if (index === 3 || index === 7) {
+                        sinon.assert.notCalled(spy);
+                    } else {
+                        sinon.assert.called(spy);
+                    }
+                });
+                done();
+            }, delay);
+        });
+
+    });
 });
